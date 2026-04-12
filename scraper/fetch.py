@@ -47,7 +47,7 @@ LOOKBACK_DAYS: int = int(os.getenv("LOOKBACK_DAYS", "7"))
 # Harris County Clerk – Official Public Records search (ASP.NET WebForms)
 CLERK_SEARCH_URL: str = os.getenv(
     "CLERK_URL",
-    "https://www.cclerk.hctx.net/Applications/WebSearch/OPR.aspx",
+    "https://caopay.harriscountytx.gov/",
 )
 
 # Harris County Appraisal District bulk parcel data
