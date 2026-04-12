@@ -11,7 +11,6 @@ on:
         required: false
         default: "7"
 
-# Required for committing results and deploying GitHub Pages
 permissions:
   contents: write
   pages: write
@@ -22,9 +21,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ──────────────────────────────────────────────────────────────────────────
+  # ────────────────────────────────────────────────────────────────────────────
   scrape:
-  # ──────────────────────────────────────────────────────────────────────────
+  # ────────────────────────────────────────────────────────────────────────────
     name: Fetch & enrich leads
     runs-on: ubuntu-22.04
 
@@ -50,9 +49,6 @@ jobs:
       - name: Run scraper
         env:
           LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '7' }}
-          # Override URLs via repository secrets / variables if needed:
-          # CLERK_URL:     ${{ vars.CLERK_URL }}
-          # HCAD_BULK_URL: ${{ vars.HCAD_BULK_URL }}
         run: python scraper/fetch.py
 
       - name: Commit updated records
@@ -67,9 +63,23 @@ jobs:
             git push
           fi
 
-  # ──────────────────────────────────────────────────────────────────────────
+      # ── Deploy fresh dashboard/ to Vercel ──────────────────────────────────
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel (production)
+        env:
+          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+          vercel build --prod --token=$VERCEL_TOKEN
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+
+  # ────────────────────────────────────────────────────────────────────────────
   deploy-pages:
-  # ──────────────────────────────────────────────────────────────────────────
+  # ────────────────────────────────────────────────────────────────────────────
     name: Deploy dashboard to GitHub Pages
     needs: scrape
     runs-on: ubuntu-22.04
@@ -81,7 +91,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: main   # pull the freshly committed records.json
+          ref: main
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
