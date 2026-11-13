@@ -1,10 +1,10 @@
 {
-  "fetched_at": "2026-11-12T15:47:25.911767Z",
+  "fetched_at": "2026-11-13T15:06:59.887598Z",
   "source": "Harris County Clerk \u2013 Official Public Records",
   "clerk_url": "https://www.cclerk.hctx.net/PublicRecords.aspx",
   "date_range": {
-    "from": "2026-11-05",
-    "to": "2026-11-12"
+    "from": "2026-11-06",
+    "to": "2026-11-13"
   },
   "total": 0,
   "with_address": 0,
